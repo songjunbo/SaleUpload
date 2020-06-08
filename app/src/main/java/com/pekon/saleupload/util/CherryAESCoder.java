@@ -1,5 +1,8 @@
 package com.pekon.saleupload.util;
 
+import com.pekon.saleupload.codec.binary.Base64;
+import com.pekon.saleupload.codec.binary.StringUtils;
+
 import java.nio.charset.Charset;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -10,8 +13,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.StringUtils;
 
 /**
  * AES对称加密算法

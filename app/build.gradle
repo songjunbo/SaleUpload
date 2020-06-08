@@ -40,5 +40,4 @@ dependencies {
     implementation 'org.greenrobot:greendao:3.3.0'
     // add library
     implementation files('libs/jackson-all-1.9.2.jar')
-    implementation files('libs/commons-codec-1.6.jar')
 }
