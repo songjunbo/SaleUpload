@@ -30,16 +30,56 @@ import okhttp3.Call;
 public class MainActivity extends AppCompatActivity {
 
 
-	private Button btn;
+	private Button btnSave;
+	private Button btnUpload;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		btn = findViewById(R.id.btn);
-		btn.setOnClickListener(new View.OnClickListener() {
+		btnSave = findViewById(R.id.btn_save);
+		btnUpload = findViewById(R.id.btn_upload);
+		btnSave.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				askPekonData();
+			}
+		});
+		btnUpload.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				MainOrderEntity mainOrderEntity = new MainOrderDaoHelper(MainActivity.this).getUnUploadMainOrderEntity();
+				if (mainOrderEntity == null) {
+					return;
+				}
+
+				OkHttpUtils.post()
+						.url(BaseUrl.upLoadUrl)
+						.addParams("strCallUserCode", "fzself")
+						.addParams("strCallPassword", "fz@gz123")
+						.addParams("strStoreCode", "01")
+						.addParams("strType", mainOrderEntity.getSaleType())
+						.addParams("strSalesDate", mainOrderEntity.getSaleTime().split(" ")[0])
+						.addParams("strSalesTime", mainOrderEntity.getSaleTime().split(" ")[1])
+						.addParams("strSalesDocNo", mainOrderEntity.getBillCode())
+						.addParams("strVipCode", "")
+						.addParams("strTenderCode", "11")
+						.addParams("strRemark", "")
+						.addParams("strItems", "{01,100,100}")
+						.build()
+						.execute(new StringCallback() {
+							@Override
+							public void onError(Call call, Exception e, int id) {
+
+								Log.i("aaa", "上传异常:" + e.toString());
+							}
+
+							@Override
+							public void onResponse(String response, int id) {
+
+								Log.i("aaa", "获取的上传数据:" + response);
+							}
+						});
+
 			}
 		});
 
