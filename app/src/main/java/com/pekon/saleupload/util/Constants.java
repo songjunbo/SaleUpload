@@ -25,27 +25,8 @@ public class Constants {
 	// witpos的系统路径
 	public static final String WITPOS_DATA_PATH = DATA_PATH + "/" + APPLICATION_NAME;
 
-	// witpos数据的实际存储位置
-	public static final String WITPOS_PATH = existSdcard() ? WITPOS_SD_PATH : WITPOS_DATA_PATH;
-
 	// 数据库路径
-	public static final String DATABASE_PATH = WITPOS_PATH + "/" + ".system";
-
-	// 数据库完整路径名
-	public static final String DATABASE_PATHNAME = DATABASE_PATH + "/" + DATABASE_NAME;
-
-	/**
-	 * 判断sd卡是否安装
-	 *
-	 * @return
-	 */
-	public static boolean existSdcard() {
-		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+	public static final String DATABASE_PATH = "/" + "DataSynchronization";
 
 }
 

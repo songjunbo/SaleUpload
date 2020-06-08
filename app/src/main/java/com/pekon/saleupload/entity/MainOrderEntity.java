@@ -5,11 +5,13 @@ import android.app.Service;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Unique;
 
 @Entity
 public class MainOrderEntity {
 	@Id(autoincrement = true)
 	private Long id;
+	@Unique
 	private String billCode;  //单号
 	private String saleTime;  //销售时间
 	private String saleType;  //交易类型

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.pekon.saleupload.R;
+import com.pekon.saleupload.dao.MainOrderDaoHelper;
 import com.pekon.saleupload.entity.MainOrderEntity;
 import com.pekon.saleupload.util.BaseUrl;
 import com.pekon.saleupload.util.CherryAESCoder;
@@ -18,7 +19,6 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 								return;
 							}
 							List<MainOrderEntity> data = JsonUtil.jsonToList(result, MainOrderEntity.class);
-							Log.i("aaa", "获取的数据-->" + data.size());
+							new MainOrderDaoHelper(MainActivity.this).insertMainOrderList(data);
 						} catch (Exception e) {
 							Log.i("aaa", "获取的数据异常：" + e.toString());
 							e.printStackTrace();
@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
 		} catch (Exception e) {
 			Log.i("aaa", "异常：" + e.toString());
 		}
-		// System.out.println(new SimpleDateFormat("yyyy:MM:dd hh:mm:ss.SSS").format((new Date()).getTime()));
 		return dataLine;
 	}
 
