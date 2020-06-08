@@ -16,6 +16,7 @@ import android.os.Process;
 import android.util.Log;
 
 import com.pekon.saleupload.R;
+import com.pekon.saleupload.service.UploadService;
 import com.pekon.saleupload.util.PermissionUtil;
 
 import java.util.ArrayList;
@@ -63,6 +64,8 @@ public class SplashActivity extends AppCompatActivity {
 	private void startMainActivity() {
 //		Intent intent = new Intent(this, MainActivity.class);
 //		startActivity(intent);
+		Intent intent = new Intent(this, UploadService.class);
+		startService(intent);
 	}
 
 	@Override

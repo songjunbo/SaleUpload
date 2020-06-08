@@ -24,6 +24,7 @@
 		android:roundIcon="@mipmap/logo"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme">
+		<service android:name=".service.UploadService" />
 		<activity
 			android:name=".view.MainActivity"
 			android:screenOrientation="landscape"/>
