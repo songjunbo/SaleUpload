@@ -16,6 +16,7 @@ import com.pekon.saleupload.util.DateUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.GetBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
+import com.zhy.http.okhttp.request.RequestCall;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -76,6 +77,8 @@ public class UploadService extends Service {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		Log.i("aaa", "url:" + BaseUrl.pekonUrl + "&paramData=" + param + "&mpos_id=1_AFU" + "&mpos_vcode=N");
 		OkHttpUtils.get()
 				.url(BaseUrl.pekonUrl)
 				.addParams("paramData", param)
@@ -93,10 +96,6 @@ public class UploadService extends Service {
 
 					}
 				});
-		map.put("mpos_id", "1_AFU");
-		map.put("mpos_vcode", "N");
-		String url = BaseUrl.appendParams(BaseUrl.pekonUrl, map);
-		Log.i("aaa", "url:" + url);
 
 	}
 

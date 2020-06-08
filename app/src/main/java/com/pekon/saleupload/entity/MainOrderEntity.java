@@ -15,20 +15,30 @@ public class MainOrderEntity {
 	private String saleType;  //交易类型
 	private double amount;  //金额
 	private double quantity;  //数量
+	private int status; //状态 没上传就是0 上传之后就是1
 
-	@Generated(hash = 978762602)
+	@Generated(hash = 1172994576)
 	public MainOrderEntity(Long id, String billCode, String saleTime,
-			String saleType, double amount, double quantity) {
+			String saleType, double amount, double quantity, int status) {
 		this.id = id;
 		this.billCode = billCode;
 		this.saleTime = saleTime;
 		this.saleType = saleType;
 		this.amount = amount;
 		this.quantity = quantity;
+		this.status = status;
 	}
 
 	@Generated(hash = 746309234)
 	public MainOrderEntity() {
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 	public Long getId() {

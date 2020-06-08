@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class BaseUrl {
 
-	public static final String pekonUrl = "http://192.168.102.88:9032/Pekonws/webservice/business";
+	public static final String pekonUrl = "http://192.168.102.88:8080/Pekonws/webservice/business";
 	public static final String key = "RYzjBiIzcnkBsph8cL8U3g==";  //加密的密钥
 
 

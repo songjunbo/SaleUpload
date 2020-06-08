@@ -62,10 +62,10 @@ public class SplashActivity extends AppCompatActivity {
 	}
 
 	private void startMainActivity() {
-//		Intent intent = new Intent(this, MainActivity.class);
-//		startActivity(intent);
-		Intent intent = new Intent(this, UploadService.class);
-		startService(intent);
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+//		Intent intent = new Intent(this, UploadService.class);
+//		startService(intent);
 	}
 
 	@Override
