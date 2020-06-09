@@ -7,11 +7,12 @@ import android.util.Log;
 import com.pekon.saleupload.dao.MainOrderDaoHelper;
 import com.pekon.saleupload.entity.MainOrderEntity;
 import com.pekon.saleupload.util.BaseUrl;
-import com.pekon.saleupload.view.MainActivity;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
-import okhttp3.Call;
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
+
 
 public class AsyncTaskPutData extends AsyncTask<Void,Void,Void> {
 
@@ -29,36 +30,31 @@ public class AsyncTaskPutData extends AsyncTask<Void,Void,Void> {
 		if (mainOrderEntity == null) {
 			return null;
 		}
-		time = mainOrderEntity.getTimes(); //获取上传的次数
-		OkHttpUtils.post()
-				.url(BaseUrl.upLoadUrl)
-				.addParams("strCallUserCode", "fzself")
-				.addParams("strCallPassword", "fz@gz123")
-				.addParams("strStoreCode", "01")
-				.addParams("strType", mainOrderEntity.getSaleType())
-				.addParams("strSalesDate", mainOrderEntity.getSaleTime().split(" ")[0])
-				.addParams("strSalesTime", mainOrderEntity.getSaleTime().split(" ")[1])
-				.addParams("strSalesDocNo", mainOrderEntity.getBillCode())
-				.addParams("strVipCode", "")
-				.addParams("strTenderCode", "11")
-				.addParams("strRemark", "")
-				.addParams("strItems", "{01,100,100}")
-				.build()
-				.execute(new StringCallback() {
-					@Override
-					public void onError(Call call, Exception e, int id) {
+		try {
+			time = mainOrderEntity.getTimes(); //获取上传的次数
+			SoapObject soapObject = new SoapObject(BaseUrl.PACE, BaseUrl.W_NAME);
+			soapObject.addProperty("strCallUserCode", "fzself");
+			soapObject.addProperty("strCallPassword", "fz@gz123");
+			soapObject.addProperty("strStoreCode", "A31910");
+			soapObject.addProperty("strType", mainOrderEntity.getSaleType());
+			soapObject.addProperty("strSalesDate", mainOrderEntity.getSaleTime().split(" ")[0].replace("-", ""));
+			soapObject.addProperty("strSalesTime", mainOrderEntity.getSaleTime().split(" ")[1].replace(":", ""));
+			soapObject.addProperty("strSalesDocNo", mainOrderEntity.getBillCode());
+			soapObject.addProperty("strVipCode", "");
+			soapObject.addProperty("strTenderCode", "{11,100,0,0}");
+			soapObject.addProperty("strRemark", "");
+			soapObject.addProperty("strItems", "{A3191001,100,100}");
+			SoapSerializationEnvelope soapSerializationEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+			soapSerializationEnvelope.setOutputSoapObject(soapObject);
 
-						Log.i("aaa", "上传异常:" + e.toString());
-						updateMainOrderEntity();
-					}
-
-					@Override
-					public void onResponse(String response, int id) {
-
-						Log.i("aaa", "获取的上传数据:" + response);
-						updateMainOrderEntity();
-					}
-				});
+			HttpTransportSE httpTransportSE = new HttpTransportSE(BaseUrl.SERVER_URL);
+			httpTransportSE.call(BaseUrl.PACE + BaseUrl.W_NAME, soapSerializationEnvelope);
+			SoapObject result = (SoapObject) soapSerializationEnvelope.bodyIn;
+			Log.i("aaa", "--->上传数据成功");
+		} catch (Exception e) {
+			Log.e("aaa", "上传的数据异常:" + e.toString());
+			e.printStackTrace();
+		}
 		return null;
 	}
 

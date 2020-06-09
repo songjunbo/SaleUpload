@@ -15,18 +15,6 @@ import com.pekon.saleupload.asyncTasks.AsyncTaskGetData;
 import com.pekon.saleupload.asyncTasks.AsyncTaskPutData;
 import com.pekon.saleupload.interfaces.OnCallbackResult;
 import com.pekon.saleupload.interfaces.ShareKey;
-import com.pekon.saleupload.util.BaseUrl;
-import com.pekon.saleupload.util.CherryAESCoder;
-import com.pekon.saleupload.util.DateUtil;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.builder.GetBuilder;
-import com.zhy.http.okhttp.callback.StringCallback;
-import com.zhy.http.okhttp.request.RequestCall;
-
-import org.codehaus.jackson.map.ObjectMapper;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;

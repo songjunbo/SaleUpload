@@ -12,17 +12,21 @@ import com.pekon.saleupload.interfaces.OnCallbackResult;
 import com.pekon.saleupload.interfaces.ShareKey;
 import com.pekon.saleupload.util.BaseUrl;
 import com.pekon.saleupload.util.CherryAESCoder;
-import com.pekon.saleupload.util.DateUtil;
 import com.pekon.saleupload.util.JsonUtil;
-import com.pekon.saleupload.view.MainActivity;
-import com.zhy.http.okhttp.OkHttpUtils;
+import com.pekon.saleupload.util.OkHttpUtil;
 
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 
@@ -50,16 +54,14 @@ public class AsyncTaskGetData extends AsyncTask<Void,Void,Boolean> {
 		map.put("DateSource", "Store");  //数据来源
 		String param = "";
 		try {
+
 			param = CherryAESCoder.encrypt(JsonUtil.objectToJson(map), BaseUrl.key);
-			Response response = OkHttpUtils.get()
-					.url(BaseUrl.pekonUrl)
-					.addParams("paramData", param)
-					.addParams("appID", "witpos")
-					.addParams("brandCode", "AFU")
-					.build()
-					.execute();
-			String str = response.body().string();
-			JSONObject root = new JSONObject(str);
+			String url = BaseUrl.pekonUrl + "?paramData=" + URLEncoder.encode(param) + "&appID=" + "witpos" + "&brandCode=" + "AFU";
+			String responseJsonString = OkHttpUtil.get(url);
+			if (TextUtils.isEmpty(responseJsonString)) {
+				return flag;
+			}
+			JSONObject root = new JSONObject(responseJsonString);
 			String errorCode = root.optString("ERRORCODE");
 			if (!TextUtils.equals(errorCode, "0")) {
 				return flag;
