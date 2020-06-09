@@ -75,6 +75,20 @@ public class MainOrderDaoHelper {
 		return mainOrderEntity;
 	}
 
+	/**
+	 * 获取所有的未上传的主单数据
+	 * @return
+	 */
+	public List<MainOrderEntity> getAllUnUploadMainOrderEntity(){
+		MainOrderEntity mainOrderEntity = null;
+		QueryBuilder<MainOrderEntity> queryBuilder = mainOrderEntityDao.queryBuilder();
+		//状态为0的就是未上传的数据
+		queryBuilder.where(MainOrderEntityDao.Properties.Status.eq(0));
+//				.where(MainOrderEntityDao.Properties.Times.lt(3))
+		List<MainOrderEntity> lists = queryBuilder.build().forCurrentThread().list();
+		return lists;
+	}
+
 	public void updateMainOrderEntity(MainOrderEntity mainOrderEntity){
 		mainOrderEntityDao.update(mainOrderEntity);
 	}

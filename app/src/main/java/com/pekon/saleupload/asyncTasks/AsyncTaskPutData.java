@@ -7,17 +7,13 @@ import android.util.Log;
 import com.pekon.saleupload.dao.MainOrderDaoHelper;
 import com.pekon.saleupload.entity.MainOrderEntity;
 import com.pekon.saleupload.util.BaseUrl;
-
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpTransportSE;
-
+import com.pekon.saleupload.util.OkHttpUtil;
+import java.net.URLEncoder;
+import java.util.List;
 
 public class AsyncTaskPutData extends AsyncTask<Void,Void,Void> {
 
 	private Context context;
-	private MainOrderEntity mainOrderEntity;
 	private int time; //上传的次数
 
 	public AsyncTaskPutData(Context context) {
@@ -26,34 +22,53 @@ public class AsyncTaskPutData extends AsyncTask<Void,Void,Void> {
 
 	@Override
 	protected Void doInBackground(Void... voids) {
-		mainOrderEntity  = new MainOrderDaoHelper(context).getUnUploadMainOrderEntity();
-		if (mainOrderEntity == null) {
-			return null;
-		}
+		List<MainOrderEntity> data = new MainOrderDaoHelper(context).getAllUnUploadMainOrderEntity();
+		//说明没有数据或者全部上传了
+//		if (data == null || data.size() == 0) {
+//			return null;
+//		}
 		try {
-			time = mainOrderEntity.getTimes(); //获取上传的次数
-			SoapObject soapObject = new SoapObject(BaseUrl.PACE, BaseUrl.W_NAME);
-			soapObject.addProperty("strCallUserCode", "fzself");
-			soapObject.addProperty("strCallPassword", "fz@gz123");
-			soapObject.addProperty("strStoreCode", "A31910");
-			soapObject.addProperty("strType", mainOrderEntity.getSaleType());
-			soapObject.addProperty("strSalesDate", mainOrderEntity.getSaleTime().split(" ")[0].replace("-", ""));
-			soapObject.addProperty("strSalesTime", mainOrderEntity.getSaleTime().split(" ")[1].replace(":", ""));
-			soapObject.addProperty("strSalesDocNo", mainOrderEntity.getBillCode());
-			soapObject.addProperty("strVipCode", "");
-			soapObject.addProperty("strTenderCode", "{11,100,0,0}");
-			soapObject.addProperty("strRemark", "");
-			soapObject.addProperty("strItems", "{A3191001,100,100}");
-			SoapSerializationEnvelope soapSerializationEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-			soapSerializationEnvelope.setOutputSoapObject(soapObject);
+			for (MainOrderEntity mainOrderEntity : data) {
+				time = mainOrderEntity.getTimes(); //获取上传的次数
+//				while (time < 3) {
+					double amount = mainOrderEntity.getAmount();
+					double quantity = mainOrderEntity.getQuantity();
+					String strTenderCode = "{11," + amount + ",0,0}";
+					String strItems = "{A3191001," + (int)quantity + "," + amount + "}";
+					String strCallUserCode = URLEncoder.encode("fzself");
+					String strCallPassword = URLEncoder.encode("fz@gz123");
+					String strStoreCode = URLEncoder.encode("A31910");  //店铺号
+					String strType = URLEncoder.encode(mainOrderEntity.getSaleType());
+					String strSalesDate = URLEncoder.encode(mainOrderEntity.getSaleTime().split(" ")[0].replace("-", ""));
+					String strSalesTime = URLEncoder.encode(mainOrderEntity.getSaleTime().split(" ")[1].replace(":", ""));
+					String strSalesDocNo = URLEncoder.encode(mainOrderEntity.getBillCode());
+					String strVipCode = URLEncoder.encode("");
+					String strTenderCodeK = URLEncoder.encode(strTenderCode);
+					String strRemark = URLEncoder.encode("");
+					String strItemsK = URLEncoder.encode(strItems);
 
-			HttpTransportSE httpTransportSE = new HttpTransportSE(BaseUrl.SERVER_URL);
-			httpTransportSE.call(BaseUrl.PACE + BaseUrl.W_NAME, soapSerializationEnvelope);
-			SoapObject result = (SoapObject) soapSerializationEnvelope.bodyIn;
-			Log.i("aaa", "--->上传数据成功");
-		} catch (Exception e) {
-			Log.e("aaa", "上传的数据异常:" + e.toString());
-			e.printStackTrace();
+					String url = BaseUrl.SERVER_URL + "/PostSales?strCallUserCode=" + strCallUserCode
+							+ "&strCallPassword=" + strCallPassword
+							+ "&strStoreCode=" + strStoreCode
+							+ "&strType=" + strType
+							+ "&strSalesDate_YYYYMMDD=" + strSalesDate
+							+ "&strSalesTime_HHMISS=" + strSalesTime
+							+ "&strSalesDocNo=" + strSalesDocNo
+							+ "&strVipCode=" + strVipCode
+							+ "&strTenderCode=" + strTenderCodeK
+							+ "&strRemark=" + strRemark
+							+ "&strItems=" + strItemsK;
+					String result = OkHttpUtil.get(url);
+					Log.i("aaa", "--->上传的结果：" + result);
+					updateMainOrderEntity(mainOrderEntity);
+
+//				}
+				break;
+			}
+
+		}catch (Exception e){
+			Log.e("aaa", "上传销售数据异常:" + e.toString());
+			return null;
 		}
 		return null;
 	}
@@ -61,7 +76,7 @@ public class AsyncTaskPutData extends AsyncTask<Void,Void,Void> {
 	/**
 	 * 不管成功还是失败都需要更新单据的上传次数
 	 */
-	private void updateMainOrderEntity(){
+	private void updateMainOrderEntity(MainOrderEntity mainOrderEntity){
 		if (mainOrderEntity == null) {
 			return;
 		}
