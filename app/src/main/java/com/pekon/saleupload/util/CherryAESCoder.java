@@ -78,10 +78,6 @@ public class CherryAESCoder {
         Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, k); // 初始化Cipher对象，设置为解密模式
         return new String(cipher.doFinal(Base64.decodeBase64(data)), "UTF-8"); // 执行解密操作
-//        String str = parseByte2HexStr(cipher.doFinal(Base64.decodeBase64(data)));
-//        byte[] byt = parseHexStr2Byte(str);
-//        return new String(byt, "UTF-8"); // 执行解密操作
-
     }
 
     /**

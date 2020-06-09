@@ -15,10 +15,15 @@ import android.os.Bundle;
 import android.os.Process;
 import android.util.Log;
 
+import com.orhanobut.hawk.Hawk;
 import com.pekon.saleupload.R;
+import com.pekon.saleupload.interfaces.ShareKey;
 import com.pekon.saleupload.service.UploadService;
+import com.pekon.saleupload.util.Constants;
+import com.pekon.saleupload.util.FileUtil;
 import com.pekon.saleupload.util.PermissionUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,10 +67,18 @@ public class SplashActivity extends AppCompatActivity {
 	}
 
 	private void startMainActivity() {
+
+		//首次登陆的时候就删除本地文件
+		if (Hawk.get(ShareKey.firstLogin, true)) {
+			String dbDir=android.os.Environment.getExternalStorageDirectory().toString();
+			dbDir += Constants.DATABASE_PATH;//数据库所在目录
+			FileUtil.delete(new File(dbDir));
+		}
+
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
-//		Intent intent = new Intent(this, UploadService.class);
-//		startService(intent);
+		Intent intent1 = new Intent(this, UploadService.class);
+		startService(intent1);
 	}
 
 	@Override

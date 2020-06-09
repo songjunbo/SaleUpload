@@ -18,10 +18,12 @@ public class MainOrderEntity {
 	private double amount;  //金额
 	private double quantity;  //数量
 	private int status; //状态 没上传就是0 上传之后就是1
+	private int times; //上传的次数 超过3次不成功就不管了
 
-	@Generated(hash = 1172994576)
+
+	@Generated(hash = 902980174)
 	public MainOrderEntity(Long id, String billCode, String saleTime,
-			String saleType, double amount, double quantity, int status) {
+			String saleType, double amount, double quantity, int status, int times) {
 		this.id = id;
 		this.billCode = billCode;
 		this.saleTime = saleTime;
@@ -29,10 +31,19 @@ public class MainOrderEntity {
 		this.amount = amount;
 		this.quantity = quantity;
 		this.status = status;
+		this.times = times;
 	}
 
 	@Generated(hash = 746309234)
 	public MainOrderEntity() {
+	}
+
+	public int getTimes() {
+		return times;
+	}
+
+	public void setTimes(int times) {
+		this.times = times;
 	}
 
 	public int getStatus() {

@@ -31,13 +31,15 @@ public class MainOrderDaoHelper {
 	 * 插入数据库的数据
 	 * @param data
 	 */
-	public void insertMainOrderList(List<MainOrderEntity> data){
+	public boolean insertMainOrderList(List<MainOrderEntity> data){
+		boolean flag = false;
 		if (data == null || data.size() == 0) {
-			return;
+			return false;
 		}
 		try {
 			for (MainOrderEntity entity : data) {
 				entity.setStatus(0); //默认状态是0  没有上传
+				entity.setTimes(0); //设置上传次数为0
 				String saleType = entity.getSaleType();
 				if (TextUtils.equals(saleType, "NS")) {
 					entity.setSaleType("SA");
@@ -46,9 +48,11 @@ public class MainOrderDaoHelper {
 				}
 			}
 			mainOrderEntityDao.insertOrReplaceInTx(data);
+			flag = true;
 		} catch (Exception e) {
 			Log.e("aaa", "插入数据库异常:" + e.toString());
 		}
+		return flag;
 
 	}
 
@@ -61,11 +65,17 @@ public class MainOrderDaoHelper {
 		MainOrderEntity mainOrderEntity = null;
 		QueryBuilder<MainOrderEntity> queryBuilder = mainOrderEntityDao.queryBuilder();
 		//状态为0的就是未上传的数据
-		queryBuilder.where(MainOrderEntityDao.Properties.Status.eq(0)).orderAsc(MainOrderEntityDao.Properties.SaleTime).limit(1);
+		queryBuilder.where(MainOrderEntityDao.Properties.Status.eq(0))
+				.where(MainOrderEntityDao.Properties.Times.lt(3))
+				.orderAsc(MainOrderEntityDao.Properties.SaleTime).limit(1);
 		List<MainOrderEntity> lists = queryBuilder.build().forCurrentThread().list();
 		if (lists != null && lists.size() != 0) {
 			mainOrderEntity = lists.get(0);
 		}
 		return mainOrderEntity;
+	}
+
+	public void updateMainOrderEntity(MainOrderEntity mainOrderEntity){
+		mainOrderEntityDao.update(mainOrderEntity);
 	}
 }

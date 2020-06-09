@@ -2,6 +2,7 @@ package com.pekon.saleupload;
 
 import android.app.Application;
 
+import com.orhanobut.hawk.Hawk;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
@@ -23,5 +24,8 @@ public class MyApplication extends Application {
 				.build();
 
 		OkHttpUtils.initClient(okHttpClient);
+
+
+		Hawk.init(this).build();
 	}
 }

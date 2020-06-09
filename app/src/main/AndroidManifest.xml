@@ -23,7 +23,8 @@
 		android:label="@string/app_name"
 		android:roundIcon="@mipmap/logo"
 		android:supportsRtl="true"
-		android:theme="@style/AppTheme">
+		android:theme="@style/AppTheme"
+		android:name=".MyApplication">
 		<service android:name=".service.UploadService" />
 		<activity
 			android:name=".view.MainActivity"
