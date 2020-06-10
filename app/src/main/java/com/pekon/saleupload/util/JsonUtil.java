@@ -1,5 +1,8 @@
 package com.pekon.saleupload.util;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -127,6 +130,28 @@ public class JsonUtil {
 				return "";
 			}
 		}
+	}
+
+	/**
+	 * 上传销售单据后返回的json数据
+	 * @param jsonString  json格式的数据
+	 * @return
+	 */
+	public static String josnForUploadSale(String jsonString){
+		String errorCode = "";
+		if (TextUtils.isEmpty(jsonString)){
+			return "-99";
+		}
+		try {
+			JSONObject jsonObject = new JSONObject(jsonString);
+			JSONObject response = jsonObject.optJSONObject("Response");
+			JSONObject result = response.optJSONObject("Result");
+			errorCode = result.optString("ErrorCode");
+		} catch (JSONException e) {
+			e.printStackTrace();
+			Log.e("aaa","销售上传后的数据解析异常:" + e.toString());
+		}
+		return errorCode;
 	}
 
 

@@ -2,14 +2,18 @@ package com.pekon.saleupload.asyncTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.pekon.saleupload.dao.MainOrderDaoHelper;
 import com.pekon.saleupload.entity.MainOrderEntity;
 import com.pekon.saleupload.util.BaseUrl;
+import com.pekon.saleupload.util.JsonUtil;
 import com.pekon.saleupload.util.OkHttpUtil;
 import java.net.URLEncoder;
 import java.util.List;
+
+import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 
 public class AsyncTaskPutData extends AsyncTask<Void,Void,Void> {
 
@@ -24,17 +28,18 @@ public class AsyncTaskPutData extends AsyncTask<Void,Void,Void> {
 	protected Void doInBackground(Void... voids) {
 		List<MainOrderEntity> data = new MainOrderDaoHelper(context).getAllUnUploadMainOrderEntity();
 		//说明没有数据或者全部上传了
-//		if (data == null || data.size() == 0) {
-//			return null;
-//		}
+		if (data == null || data.size() == 0) {
+			return null;
+		}
 		try {
 			for (MainOrderEntity mainOrderEntity : data) {
 				time = mainOrderEntity.getTimes(); //获取上传的次数
-//				while (time < 3) {
+				while (time < 3) {
+					Log.i("aaa", "上传了：" + mainOrderEntity.getBillCode() + "  次数：" + time);
 					double amount = mainOrderEntity.getAmount();
 					double quantity = mainOrderEntity.getQuantity();
 					String strTenderCode = "{11," + amount + ",0,0}";
-					String strItems = "{A3191001," + (int)quantity + "," + amount + "}";
+					String strItems = "{A3191001," + (int) quantity + "," + amount + "}";  //货品
 					String strCallUserCode = URLEncoder.encode("fzself");
 					String strCallPassword = URLEncoder.encode("fz@gz123");
 					String strStoreCode = URLEncoder.encode("A31910");  //店铺号
@@ -59,18 +64,29 @@ public class AsyncTaskPutData extends AsyncTask<Void,Void,Void> {
 							+ "&strRemark=" + strRemark
 							+ "&strItems=" + strItemsK;
 					String result = OkHttpUtil.get(url);
-					Log.i("aaa", "--->上传的结果：" + result);
+
+					if (TextUtils.isEmpty(result)) {
+						updateMainOrderEntity(mainOrderEntity);
+						break;
+					}
+					XmlToJson xmlToJson = new XmlToJson.Builder(result).build();
+					String a = xmlToJson.toString();
+					String errCode = JsonUtil.josnForUploadSale(a);
+					if (TextUtils.equals(errCode, "-100")   //已经上传过了
+							||TextUtils.equals(errCode, "0")) {  //上传成功
+						mainOrderEntity.setStatus(1);
+						updateMainOrderEntity(mainOrderEntity);
+						break;
+					}
+
 					updateMainOrderEntity(mainOrderEntity);
-
-//				}
-				break;
+				}
 			}
-
-		}catch (Exception e){
+		} catch (Exception e) {
 			Log.e("aaa", "上传销售数据异常:" + e.toString());
 			return null;
 		}
-		return null;
+			return null;
 	}
 
 	/**

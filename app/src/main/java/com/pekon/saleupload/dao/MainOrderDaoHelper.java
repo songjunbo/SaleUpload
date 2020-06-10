@@ -80,11 +80,10 @@ public class MainOrderDaoHelper {
 	 * @return
 	 */
 	public List<MainOrderEntity> getAllUnUploadMainOrderEntity(){
-		MainOrderEntity mainOrderEntity = null;
 		QueryBuilder<MainOrderEntity> queryBuilder = mainOrderEntityDao.queryBuilder();
 		//状态为0的就是未上传的数据
-		queryBuilder.where(MainOrderEntityDao.Properties.Status.eq(0));
-//				.where(MainOrderEntityDao.Properties.Times.lt(3))
+		queryBuilder.where(MainOrderEntityDao.Properties.Status.eq(0))
+				.where(MainOrderEntityDao.Properties.Times.lt(3));
 		List<MainOrderEntity> lists = queryBuilder.build().forCurrentThread().list();
 		return lists;
 	}

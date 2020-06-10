@@ -50,7 +50,6 @@ public class UploadService extends Service {
 				new AsyncTaskGetData(UploadService.this, new OnCallbackResult() {
 					@Override
 					public void OnSuccess() {
-						Log.i("aaa", "插入数据库成功");
 						new AsyncTaskPutData(UploadService.this).executeOnExecutor(Executors.newSingleThreadExecutor());
 					}
 				}).executeOnExecutor(Executors.newSingleThreadExecutor());

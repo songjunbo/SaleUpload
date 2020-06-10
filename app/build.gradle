@@ -41,4 +41,5 @@ dependencies {
     implementation files('libs/jackson-all-1.9.2.jar')
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.orhanobut:hawk:2.0.1'
+    implementation 'com.github.smart-fun:XmlToJson:1.4.5'    // add this line
 }
